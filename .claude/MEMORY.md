@@ -13,7 +13,9 @@ Règles de mise à jour :
 - `vendor/` absent : lancer `composer install` (dans WSL) avant toute commande Symfony.
 - Config BDD encore en **PostgreSQL** (héritage du squelette) alors que la cible est **MariaDB**.
 - Claude Code configuré : `CLAUDE.md`, `README.md`, 8 agents dans `.claude/agents/`, cette mémoire.
-- Branche courante : `main` ; rien de tout cela n'est encore commité.
+- Branche courante : `feature/01-install-claude` (commitée et poussée, pas encore fusionnée dans `main`).
+- ⚠️ Fins de ligne : le dépôt a été cloné avec le git Windows (`core.autocrlf=true`), donc les fichiers du squelette sont en CRLF sur le disque. Le git de WSL les voit tous « modifiés » : ne pas les commiter depuis WSL. Correctif proposé (non fait) : `.gitattributes` avec `* text=auto eol=lf` puis re-checkout.
+- Git dans WSL n'a ni identité (`user.name`/`user.email`) ni clé SSH GitHub : commits et push se font avec le git Windows (`git -c safe.directory=* …`).
 
 ## Décisions
 
@@ -30,10 +32,11 @@ Règles de mise à jour :
 
 ## Prochaines étapes
 
-1. Créer la branche `feature/01-install-claude` et commiter `CLAUDE.md`, `README.md`, `.claude/` *(en attente de validation)*.
-2. `feature/02-mariadb` : passer `compose.yaml` (MariaDB + phpMyAdmin), `.env` (`DATABASE_URL`), `doctrine.yaml` en MariaDB → agent `symfony-dev` *(en attente de validation)*.
-3. Charte graphique `docs/charte-graphique.md` → agent `designer`.
-4. Modèle de données (sections, instruments, photos, extraits sonores, commentaires, utilisateurs) → agent `architecte`.
+1. Fusionner `feature/01-install-claude` dans `main` (pull request).
+2. Corriger les fins de ligne (`.gitattributes`) *(à valider)*.
+3. `feature/02-mariadb` : passer `compose.yaml` (MariaDB + phpMyAdmin), `.env` (`DATABASE_URL`), `doctrine.yaml` en MariaDB → agent `symfony-dev` *(en attente de validation)*.
+4. Charte graphique `docs/charte-graphique.md` → agent `designer`.
+5. Modèle de données (sections, instruments, photos, extraits sonores, commentaires, utilisateurs) → agent `architecte`.
 
 ## Questions ouvertes
 
@@ -41,4 +44,4 @@ Règles de mise à jour :
 
 ## Historique
 
-- **2026-11-09** — Initialisation de Claude Code : `/init`, rédaction de `CLAUDE.md` en français, `README.md` avec journal des étapes, création des agents (dont `designer`), création de cette mémoire partagée.
+- **2026-11-09** — Initialisation de Claude Code : `/init`, rédaction de `CLAUDE.md` en français, `README.md` avec journal des étapes, création des agents (dont `designer`), création de cette mémoire partagée. Commit `6455ce0` poussé sur `feature/01-install-claude`.
