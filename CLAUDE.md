@@ -28,8 +28,9 @@ Site de présentation des instruments à cordes frottées, destiné aux passionn
 - WSL2 Ubuntu 22.04 sous Windows 11. Le dépôt est dans WSL : lancer PHP/Composer/Docker **dans WSL**, pas depuis Windows. Fins de ligne LF, indentation 4 espaces (2 pour `compose*.yaml`) — voir `.editorconfig`.
 - Symfony 7.4 LTS (webapp), PHP 8.5 visé (`composer.json` exige `>=8.2`).
 - Front : AssetMapper + importmap (pas de Node), Stimulus, Turbo, Symfony UX (https://ux.symfony.com/), templates Twig.
-- Base de données : **MariaDB + phpMyAdmin** (cible). ⚠️ Le squelette est encore configuré en PostgreSQL (`compose.yaml`, `DATABASE_URL` dans `.env`, `identity_generation_preferences` dans `config/packages/doctrine.yaml`) : à basculer en MariaDB avant la première migration.
-- Mails en dev : Mailpit (`compose.override.yaml`).
+- Base de données : **MariaDB 11.8** en Docker, port hôte **3307** (le 3306 est pris par un MariaDB natif dans WSL, à ne pas utiliser) ; phpMyAdmin sur http://localhost:8081 (le 8080 est pris par Apache dans WSL). `docker/db/init.sql` donne à `app` les droits sur `app_test%` ; il ne s'exécute qu'à la création du volume (`docker compose down -v` pour le rejouer, ce qui efface la base).
+- Mails en dev : Mailpit (`MAILER_DSN` dans `.env.dev`), interface http://localhost:8025.
+- Extensions PHP requises dans WSL : `php8.5-xml php8.5-mysql php8.5-mbstring php8.5-intl php8.5-curl php8.5-zip`.
 - Docker pour l'environnement local.
 
 ## Commandes
@@ -42,7 +43,8 @@ MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-22.04 --cd /home/webdev/irina_instrument_de
 
 ```bash
 composer install
-docker compose up -d                     # BDD + Mailpit
+docker compose up -d                     # MariaDB + phpMyAdmin + Mailpit
+docker compose stop                      # arrêter (down = supprimer les conteneurs, down -v = effacer aussi la BDD)
 symfony serve -d                         # ou : php -S localhost:8000 -t public
 
 php bin/console make:entity              # make:controller, make:form, make:crud, make:user…
